@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All-in-One Calculator</title>
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  background: white;
+  color: black;
+  padding: 20px;
+  margin: 0;
+}
+.dark {
+  background: #222;
+  color: white;
+}
+.container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  background: #f9f9f9;
+}
+.dark .container {
+  background: #333;
+  border-color: #555;
+}
+h2 {
+  margin-top: 0;
+}
+.tabs {
+  margin: 15px 0;
+}
+.tabs button {
+  padding: 10px 15px;
+  margin: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.tabs button:hover {
+  background: #0056b3;
+}
+input[type="text"] {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  font-size: 18px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+.dark input[type="text"] {
+  background: #444;
+  color: white;
+  border-color: #666;
+}
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+.buttons button {
+  width: 22%;
+  padding: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.buttons button:hover {
+  background: #218838;
+}
+.buttons button.operator {
+  background: #ff9800;
+}
+.buttons button.operator:hover {
+  background: #e68900;
+}
+.buttons button.equals {
+  background: #ff5722;
+}
+.buttons button.equals:hover {
+  background: #e64a19;
+}
+.hidden {
+  display: none !important;
+}
+.theme-btn {
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.theme-btn:hover {
+  background: #5a6268;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>🧮 Calculator App</h2>
+  <button class="theme-btn" onclick="toggleTheme()">🌙 Theme بدلیں</button>
+  <div class="tabs">
+    <button onclick="showTab('simple')">سادہ</button>
+    <button onclick="showTab('scientific')">سائنسی</button>
+  </div>
+  <div id="simple">
+    <input id="simpleInput" type="text" readonly placeholder="نتیجہ یہاں آئے گا">
+    <div class="buttons">
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button class="operator" onclick="press('/')">/</button>
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button class="operator" onclick="press('*')">×</button>
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button class="operator" onclick="press('-')">−</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="press('.')">.</button>
+      <button class="equals" onclick="calculate()">=</button>
+      <button class="operator" onclick="press('+')">+</button>
+      <button class="operator" onclick="clearInput()" style="width: 48%;">صاف کریں (C)</button>
+    </div>
+  </div>
+  <div id="scientific" class="hidden">
+    <input id="sciInput" type="text" readonly placeholder="نتیجہ یہاں آئے گا">
+    <div class="buttons">
+      <button class="operator" onclick="pressSci('Math.sin(')">sin</button>
+      <button class="operator" onclick="pressSci('Math.cos(')">cos</button>
+      <button class="operator" onclick="pressSci('Math.tan(')">tan</button>
+      <button class="operator" onclick="pressSci('Math.log10(')">log</button>
+      <button class="operator" onclick="pressSci('Math.sqrt(')">√</button>
+      <button class="operator" onclick="pressSci('**')">^</button>
+      <button class="operator" onclick="pressSci('(')">(</button>
+      <button class="operator" onclick="pressSci(')')">)</button>
+      <button onclick="pressSci('7')">7</button>
+      <button onclick="pressSci('8')">8</button>
+      <button onclick="pressSci('9')">9</button>
+      <button class="operator" onclick="pressSci('/')">/</button>
+      <button onclick="pressSci('4')">4</button>
+      <button onclick="pressSci('5')">5</button>
+      <button onclick="pressSci('6')">6</button>
+      <button class="operator" onclick="pressSci('*')">×</button>
+      <button onclick="pressSci('1')">1</button>
+      <button onclick="pressSci('2')">2</button>
+      <button onclick="pressSci('3')">3</button>
+      <button class="operator" onclick="pressSci('-')">−</button>
+      <button onclick="pressSci('0')">0</button>
+      <button onclick="pressSci('.')">.</button>
+      <button class="equals" onclick="calculateSci()">=</button>
+      <button class="operator" onclick="pressSci('+')">+</button>
+      <button class="operator" onclick="clearSci()" style="width: 48%;">صاف کریں (C)</button>
+    </div>
+  </div>
+</div>
+<script>
+let input = "";
+let sciInput = "";
+function press(val) {
+  input += val;
+  document.getElementById("simpleInput").value = input;
+}
+function calculate() {
+  try {
+    let result = eval(input);
+    document.getElementById("simpleInput").value = result;
+    input = result;
+  } catch {
+    alert("غلط سوال!");
+    clearInput();
+  }
+}
+function clearInput() {
+  input = "";
+  document.getElementById("simpleInput").value = "";
+}
+function pressSci(val) {
+  sciInput += val;
+  document.getElementById("sciInput").value = sciInput;
+}
+function calculateSci() {
+  try {
+    let result = eval(sciInput);
+    document.getElementById("sciInput").value = result;
+    sciInput = result;
+  } catch {
+    alert("غلط سوال!");
+    clearSci();
+  }
+}
+function clearSci() {
+  sciInput = "";
+  document.getElementById("sciInput").value = "";
+}
+function showTab(tab) {
+  document.getElementById("simple").classList.add("hidden");
+  document.getElementById("scientific").classList.add("hidden");
+  document.getElementById(tab).classList.remove("hidden");
+}
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+}
+</script>
+</body>
+</html>
